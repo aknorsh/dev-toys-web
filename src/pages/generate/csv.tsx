@@ -1,17 +1,4 @@
-import {
-  Button,
-  Card,
-  Container,
-  Divider,
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Button, Card, Container, Divider, IconButton, TextField, Typography } from '@mui/material';
 import ReplayIcon from '@mui/icons-material/Replay';
 import { AnyColumn } from 'types/csv';
 import React, { useEffect, useState } from 'react';
@@ -26,6 +13,7 @@ import SettingTabs from 'components/Csv/SettingTabs';
 import SettingTabPanelHeader from 'components/Csv/SettingTabPanelHeader';
 import SettingTabPanelContents from 'components/Csv/SettingTabPanelContents';
 import { generateBody, generateHeader } from 'lib/csv';
+import PreviewTable from 'components/Csv/PreviewTable';
 
 const initialColumns: AnyColumn[] = [
   { ...sequenceTemplate, header: 'id' },
@@ -40,7 +28,6 @@ const initialColumns: AnyColumn[] = [
   { ...numberTemplate, header: 'score' },
 ];
 
-// TODO: PreviewTableの切り出し
 // TODO: Settingのエクスポートをする
 // TODO: dateのサポート
 
@@ -140,27 +127,7 @@ export default function Csv() {
         <Typography variant='button' color='initial'>
           Preview
         </Typography>
-        <Table sx={{ border: 1, borderColor: 'lightgray' }}>
-          <TableHead>
-            <TableRow>
-              {previewHead.map((head, idx) => (
-                <TableCell key={`preview-head-${idx}`}>{head}</TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {previewBody.map((row, rowIdx) => (
-              <TableRow key={`preview-body-row-${rowIdx}`}>
-                {row.map((cell, idx) => (
-                  <TableCell key={`preview-body-cell-${rowIdx}-${idx}`}>{cell}</TableCell>
-                ))}
-              </TableRow>
-            ))}
-            <TableRow>
-              <TableCell>...</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+        <PreviewTable header={previewHead} body={previewBody} />
       </Container>
     </>
   );
