@@ -40,7 +40,6 @@ const initialColumns: AnyColumn[] = [
   { ...numberTemplate, header: 'score' },
 ];
 
-// TODO: ボタンクリックでダウンロードする
 // TODO: PreviewTableの切り出し
 // TODO: Settingのエクスポートをする
 // TODO: dateのサポート
@@ -85,6 +84,23 @@ export default function Csv() {
   };
   useEffect(() => getPreview(columns), [columns]);
 
+  const handleDownload = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const enclose = (val: string) => `"${val}"`;
+    const row2Str = (row: string[]) => row.map((cell) => enclose(cell)).join(',');
+
+    const content = [generateHeader(columns), ...generateBody(columns, size)]
+      .map((row) => row2Str(row))
+      .join('\n');
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'sample.csv';
+    a.click();
+    a.remove();
+  };
+
   return (
     <>
       <Container maxWidth='lg' sx={{ marginTop: 2 }}>
@@ -102,7 +118,9 @@ export default function Csv() {
       </Container>
 
       <Container maxWidth='lg' sx={{ marginTop: 2, display: 'flex', gap: 2 }}>
-        <Button variant='contained'>Download</Button>
+        <Button variant='contained' onClick={handleDownload}>
+          Download
+        </Button>
         <TextField
           id='size-field'
           value={size}
@@ -147,17 +165,3 @@ export default function Csv() {
     </>
   );
 }
-
-/*
-function handleDownload () {
-  let content = generateData();
-  let blob = new Blob([content], { "type" : "text/plain"});
-  
-  if (window.navigator.msSaveBlob) {
-    window.navigator.msSaveBlob(blob, "out.csv");
-    window.navigator.msSaveOrOpenBlob(blob, "out.csv");
-  } else {
-    document.getElementById("download").href = window.URL.createObjectURL(blob);
-  }
-}
-*/
